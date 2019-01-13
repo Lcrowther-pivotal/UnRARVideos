@@ -3,10 +3,10 @@ from subprocess import check_call
 from os.path import join
 
 rx = '(.*rar$)|(.*r00$)'
-path = "/Users/XXX/rartest/"
+path = "/Users/xxx/rartest/"
 extensions = "[.mkv,.avi]"
 
-def runUnRar(path,cmd_part):
+def runCommand(path, cmd_part):
     for root, dirs, files in os.walk(path):
         if not any(f.endswith(extensions) for f in files):
             found_r = False
@@ -15,7 +15,7 @@ def runUnRar(path,cmd_part):
 
                 try:
                      if not found_r and file.endswith((".rar",".r00")):
-                         command = cmd_part
+                         command = cmd_part[:]
                          command.append(pth)
                          command.append(root)
                          check_call(command)
@@ -27,4 +27,9 @@ def runUnRar(path,cmd_part):
                     print ("OOps! That did not work")
 
 
-runUnRar(path,["unrar", "e", "-o-"])
+#first execute the unrar process
+runCommand(path, ["unrar", "e", "-o-"])
+
+#next execute the delete process
+runCommand(path, ["rm"])
+
