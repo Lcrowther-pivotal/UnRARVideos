@@ -3,7 +3,7 @@ from subprocess import check_call
 from os.path import join
 import os
 
-path = "/Users/lcrowther/rartest/movies/"
+path = "/Users/xxxx/rartest/movies/"
 movie_extensions = [".mkv", ".avi"]
 extensions_to_delete = [".rar"]
 #build up full list of ".rxx" files to delete
