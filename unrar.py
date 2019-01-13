@@ -1,14 +1,20 @@
 import os
 from subprocess import check_call
 from os.path import join
+import os
 
-rx = '(.*rar$)|(.*r00$)'
-path = "/Users/xxx/rartest/"
-extensions = "[.mkv,.avi]"
+path = "/Users/XXX/rartest/movies/"
+movie_extensions = [".mkv", ".avi"]
+extensions_to_delete = [".rar"]
+#build up full list of ".rxx" files to delete
+for x in xrange(0, 10):
+    for y in xrange(0, 10):
+        extensions_to_delete.append(".r"+str(x)+str(y))
 
-def runCommand(path, cmd_part):
+
+def doUnRAR(path, cmd_part):
     for root, dirs, files in os.walk(path):
-        if not any(f.endswith(extensions) for f in files):
+        if not any(f.endswith(tuple(movie_extensions)) for f in files):
             found_r = False
             for file in files:
                 pth = join(root, file)
@@ -19,17 +25,27 @@ def runCommand(path, cmd_part):
                          command.append(pth)
                          command.append(root)
                          check_call(command)
-                         #cmd = ["unrar", "e", "-o-", pth, root]
-                         # #check_call(cmd)
                          found_r = True
                          break
-                except Exception:
-                    print ("OOps! That did not work")
+                except Exception as e:
+                    print ("OOps! That did not work: ")
+
+def doDelete(path, cmd_part):
+    for root,dirs, files in os.walk(path):
+        for file in files:
+            pth = join(root, file)
+            try:
+                if not os.path.isdir(pth) and file.endswith(tuple(extensions_to_delete)):
+                    command = cmd_part[:]
+                    command.append(pth)
+                    check_call(command)
+            except Exception as e:
+                print ("OOps! That did not work: " +str(e))
 
 
 #first execute the unrar process
-runCommand(path, ["unrar", "e", "-o-"])
+doUnRAR(path, ["unrar", "e", "-o-"])
 
 #next execute the delete process
-runCommand(path, ["rm"])
+doDelete(path, ["rm"])
 
